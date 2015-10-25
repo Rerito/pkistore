@@ -32,8 +32,8 @@ struct dn_grammar_common : public qi::grammar<Iterator, std::multiset<dn_key_val
     rdn_pair = key >> -('=' >> value);
     key = (*qi::char_("a-zA-Z"));
     hex_string = (&qi::char_("#")) >> *(qi::repeat(2)[qi::char_("0-9a-fA-F")]);
-    value = (*(qi::char_("a-zA-Z0-9") | (&qi::char_("\\") >> dn_reserved_chars))) |
-            ((&qi::char_('"')) >> *(qi::char_("0-9a-zA-Z") | dn_reserved_chars) >> (&qi::char_('"'))) |
+    value = (qi::lexeme[*(qi::char_("a-zA-Z0-9") | (&qi::char_("\\") >> dn_reserved_chars))]) |
+            ((&qi::char_('"')) >> qi::lexeme[*(qi::char_("0-9a-zA-Z") | dn_reserved_chars)] >> (&qi::char_('"'))) |
             hex_string;
   }
   qi::rule<Iterator, std::multiset<dn_key_value_map>()> dn;
