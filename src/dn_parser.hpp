@@ -1,7 +1,10 @@
 
+// Fusion includes that *might* be required for semantic actions
+// on the DN grammar
 #include <boost/fusion/include/std_pair.hpp>
 #include <boost/fusion/include/map.hpp>
 #include <boost/fusion/include/set.hpp>
+
 #include <boost/spirit/include/qi.hpp>
 #include <unordered_map>
 #include <set>
