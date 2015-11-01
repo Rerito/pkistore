@@ -13,7 +13,7 @@ int main() {
             //"CN=Steve Kille, O=ISODE Consortium, C=GB\n",
         })
     {
-        auto parsed = pkistore::parse(input);
+        auto parsed = pkistore::parsing::parse(input);
 
         std::cout << "===========\n" << input << "\n";
         for(auto const& dn : parsed) {

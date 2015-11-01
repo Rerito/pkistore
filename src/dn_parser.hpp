@@ -23,8 +23,9 @@ namespace pkistore {
             // syntax as defined in rfc1779
             key          = raw[ alnum >> *(alnum | '-') ];
 
+            dn_reserved_chars = qi::char_("\"\\+,;=%#<>");
             char_escape  = '\\' >> (hexchar | dn_reserved_chars);
-            quote_string = '"' >> *(char_escape | (char_ - dn_reserved_chars)) >> '"' ;
+            quote_string = '"' >> *(char_escape | (char_ - qi::char_("\"\\"))) >> '"' ;
 
             value        =  quote_string 
                          | '#' >> *hexchar
@@ -51,35 +52,24 @@ namespace pkistore {
         qi::rule<Iterator, std::pair<std::string, std::string>(), ascii::space_type> rdn_pair;
 
         qi::rule<Iterator, std::string()> key, value, quote_string;
-        qi::rule<Iterator, char()>        char_escape;
-
-        struct dn_reserved_chars_ : public qi::symbols<char, char> {
-            dn_reserved_chars_() {
-                add ("\\", '\\') ("\"", '"')
-                    ("=" , '=')  ("+" , '+')
-                    ("," , ',')  (";" , ';')
-                    ("#" , '#')  ("%" , '%')
-                    ("<" , '<')  (">" , '>')
-                    ;
-            }
-        } dn_reserved_chars;
+        qi::rule<Iterator, char()>        char_escape, dn_reserved_chars;
     };
 
+        static parsing::ast::dn parse(std::string const& input) {
+            using It = std::string::const_iterator;
+
+            pkistore::parsing::dn_grammar_common<It> const g;
+
+            It f = input.begin(), l = input.end();
+            pkistore::parsing::ast::dn parsed;
+
+            bool ok = boost::spirit::qi::parse(f, l, g, parsed);
+
+            if (!ok || (f!=l))
+                throw std::runtime_error("dn_parse failure");
+
+            return parsed;
+        }
     } // namespace parsing
 
-    static parsing::ast::dn parse(std::string const& input) {
-        using It = std::string::const_iterator;
-
-        pkistore::parsing::dn_grammar_common<It> const g;
-
-        It f = input.begin(), l = input.end();
-        pkistore::parsing::ast::dn parsed;
-
-        bool ok = boost::spirit::qi::parse(f, l, g, parsed);
-
-        if (!ok || (f!=l))
-            throw std::runtime_error("dn_parse failure");
-
-        return parsed;
-    }
 } // namespace pkistore
