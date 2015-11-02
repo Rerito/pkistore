@@ -12,5 +12,5 @@ include_directories(../src)
 add_executable(pkistore_test ${SRC})
 
 set_target_properties(pkistore_test PROPERTIES CXX_STANDARD 11)
-target_link_libraries(pkistore_test pthread ${GTEST_BOTH_LIBRARIES} pkistore_static)
+target_link_libraries(pkistore_test ${GTEST_BOTH_LIBRARIES} pkistore_static pthread)
 
