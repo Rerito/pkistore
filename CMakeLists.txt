@@ -1,5 +1,5 @@
 
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.1.0 FATAL_ERROR)
 set ( CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
 project(pkistore CXX)
